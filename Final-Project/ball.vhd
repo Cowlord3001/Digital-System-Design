@@ -10,7 +10,13 @@ ENTITY ball IS
 		pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
 		red       : OUT STD_LOGIC;
 		green     : OUT STD_LOGIC;
-		blue      : OUT STD_LOGIC
+		blue      : OUT STD_LOGIC;
+		SW        : IN std_logic_vector(2 DOWNTO 0);
+		BTNC      : IN std_logic;
+		BTNU      : IN std_logic;
+		BTND      : IN std_logic;
+		BTNL      : IN std_logic;
+		BTNR      : IN std_logic
 	);
 END ball;
 
