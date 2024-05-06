@@ -50,20 +50,25 @@ BEGIN
 		BEGIN
 			WAIT UNTIL rising_edge(v_sync);
 			
-			IF BTNU = '1' AND ball_y + size <= 600 THEN
-			     ball_y_motion <= "00000000100";
-			ELSIF BTND = '1' AND ball_y >= size THEN
+			IF BTNU = '1' AND ball_y >= (2*size) THEN
 			     ball_y_motion <= "11111111100";
+			ELSIF BTND = '1' AND ball_y + (2*size) <= 600 THEN
+			     ball_y_motion <= "00000000100";
 			ELSE
 		         ball_y_motion <= "00000000000";
 			END IF;
 			
-			IF BTNR = '1' AND ball_x + size <= 800 THEN
-			     ball_y_motion <= "00000000100";
-			ELSIF BTNL = '1' AND ball_x >= size THEN
-			     ball_y_motion <= "11111111100";
+			IF BTNR = '1' AND ball_x + (2*size) <= 800 THEN
+			     ball_x_motion <= "00000000100";
+			ELSIF BTNL = '1' AND ball_x >= (2*size) THEN
+			     ball_x_motion <= "11111111100";
 			ELSE
 		         ball_x_motion <= "00000000000";
+			END IF;
+			
+			IF BTNC = '1' THEN
+			     ball_x <= CONV_STD_LOGIC_VECTOR(400, 11);
+			     ball_y <= CONV_STD_LOGIC_VECTOR(300, 11);
 			END IF;
 			
 			ball_x <= ball_x + ball_x_motion; -- compute next ball position
