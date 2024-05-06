@@ -44,16 +44,29 @@ BEGIN
 			ball_on <= '0';
 		END IF;
 		END PROCESS;
+			
 		-- process to move ball once every frame (i.e. once every vsync pulse)
 		mball : PROCESS
 		BEGIN
 			WAIT UNTIL rising_edge(v_sync);
-			-- allow for bounce off top or bottom of screen
-			IF ball_y + size >= 600 THEN
-				ball_y_motion <= "11111111100"; -- -4 pixels
-			ELSIF ball_y <= size THEN
-				ball_y_motion <= "00000000100"; -- +4 pixels
+			
+			IF BTNU = '1' AND ball_y + size <= 600 THEN
+			     ball_y_motion <= "00000000100";
+			ELSIF BTND = '1' AND ball_y >= size THEN
+			     ball_y_motion <= "11111111100";
+			ELSE
+		         ball_y_motion <= "00000000000";
 			END IF;
+			
+			IF BTNR = '1' AND ball_x + size <= 800 THEN
+			     ball_y_motion <= "00000000100";
+			ELSIF BTNL = '1' AND ball_x >= size THEN
+			     ball_y_motion <= "11111111100";
+			ELSE
+		         ball_x_motion <= "00000000000";
+			END IF;
+			
+			ball_x <= ball_x + ball_x_motion; -- compute next ball position
 			ball_y <= ball_y + ball_y_motion; -- compute next ball position
 		END PROCESS;
 END Behavioral;
