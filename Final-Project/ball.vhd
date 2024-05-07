@@ -26,7 +26,7 @@ ARCHITECTURE Behavioral OF ball IS
     signal bally : c_mem_t;
 	CONSTANT cursor_size  : INTEGER := 8;    -- "RADIUS"
 	CONSTANT ball_size :   INTEGER := 50;
-	SIGNAL ball_on : STD_LOGIC_VECTOR(3 DOWNTO 0); -- indicates whether ball / pixel is over current pixel position
+	SIGNAL ball_on : STD_LOGIC_VECTOR(0 DOWNTO 47); -- indicates whether ball / pixel is over current pixel position
 	-- current ball position - intitialized to center of screen
 	SIGNAL cursor_x  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
 	SIGNAL cursor_y  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
@@ -35,30 +35,35 @@ ARCHITECTURE Behavioral OF ball IS
 	SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 	signal temp : INTEGER;
 BEGIN
+
+    forloop : PROCESS IS
+    BEGIN
     temp <= 0;
-    for i in 0 to 5 loop
-        for j in 0 to 7 loop
-            ballx(temp) <= CONV_STD_LOGIC_VECTOR(j*100+50, 11);
-            bally(temp) <= CONV_STD_LOGIC_VECTOR(i*100+50, 11);
-            temp <= temp + 1;
+        for i in 0 to 5 loop
+            for j in 0 to 7 loop
+                ballx(temp) <= CONV_STD_LOGIC_VECTOR(j*100+50, 11);
+                bally(temp) <= CONV_STD_LOGIC_VECTOR(i*100+50, 11);
+                temp <= temp + 1;
+            end loop;
         end loop;
-    end loop;
-    
-	red <= NOT ball_on(1) AND NOT ball_on(0);
-	green <= NOT ball_on(2) AND NOT ball_on(0);
-	blue  <= NOT ball_on(3) AND NOT ball_on(0);
+    END PROCESS;
 	
 	-- process to draw ball current pixel address is covered by ball position
 	bdraw : PROCESS (ballx, bally) IS
 	BEGIN
-		--IF (pixel_col >= ballx(0) - ball_size) AND
-		-- (pixel_col <= ballx(0) + ball_size) AND
-		--	 (pixel_row >= ball_y1 - ball_size) AND
-		--	 (pixel_row <= ball_y1 + ball_size) THEN
-		--		ball_on(1) <= '1';
-		--END IF;
-		END PROCESS;
+	   for i in 0 to 47 loop
+	       IF (pixel_col >= ballx(i) - ball_size) AND
+		      (pixel_col <= ballx(i) + ball_size) AND
+			  (pixel_row >= bally(i) - ball_size) AND
+			  (pixel_row <= bally(i) + ball_size) THEN
+			     ball_on(i) <= '1';
+		  END IF;
+	   end loop;
+    END PROCESS;
 	
+    red <= NOT ball_on(5) AND NOT ball_on(0);
+	green <= NOT ball_on(9) AND NOT ball_on(0);
+	blue  <= NOT ball_on(22) AND NOT ball_on(0);
 	
 	-- process to draw cursor current pixel address is covered by cursor position
 	draw_cursor : PROCESS (cursor_x, cursor_y, pixel_row, pixel_col) IS
