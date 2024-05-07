@@ -23,32 +23,45 @@ END ball;
 ARCHITECTURE Behavioral OF ball IS
     type c_mem_t is array (0 to 47) of std_logic_vector(10 downto 0);
     signal ballx : c_mem_t;
+    signal bally : c_mem_t;
 	CONSTANT cursor_size  : INTEGER := 8;    -- "RADIUS"
-	CONSTANT size_rest :   INTEGER := 50;
+	CONSTANT ball_size :   INTEGER := 50;
 	SIGNAL ball_on : STD_LOGIC_VECTOR(3 DOWNTO 0); -- indicates whether ball / pixel is over current pixel position
 	-- current ball position - intitialized to center of screen
 	SIGNAL cursor_x  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
 	SIGNAL cursor_y  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
-	SIGNAL ball_x1  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
-	SIGNAL ball_y1  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
-	SIGNAL ball_x2  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(100, 11);
-	SIGNAL ball_y2  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(100, 11);
-	SIGNAL ball_x3  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(150, 11);
-	SIGNAL ball_y3  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(150, 11);
 	-- current ball motion - initialized to 0 pixels/frame (00000000000)
 	SIGNAL ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 	SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
+	signal temp : INTEGER;
 BEGIN
-    ballx(0) <= CONV_STD_LOGIC_VECTOR(50, 11);
+    temp <= 0;
+    for i in 0 to 5 loop
+        for j in 0 to 7 loop
+            ballx(temp) <= CONV_STD_LOGIC_VECTOR(j*100+50, 11);
+            bally(temp) <= CONV_STD_LOGIC_VECTOR(i*100+50, 11);
+            temp <= temp + 1;
+        end loop;
+    end loop;
     
 	red <= NOT ball_on(1) AND NOT ball_on(0);
 	green <= NOT ball_on(2) AND NOT ball_on(0);
 	blue  <= NOT ball_on(3) AND NOT ball_on(0);
 	
-	
-	
 	-- process to draw ball current pixel address is covered by ball position
-	bdraw0 : PROCESS (cursor_x, cursor_y, pixel_row, pixel_col) IS
+	bdraw : PROCESS (ballx, bally) IS
+	BEGIN
+		--IF (pixel_col >= ballx(0) - ball_size) AND
+		-- (pixel_col <= ballx(0) + ball_size) AND
+		--	 (pixel_row >= ball_y1 - ball_size) AND
+		--	 (pixel_row <= ball_y1 + ball_size) THEN
+		--		ball_on(1) <= '1';
+		--END IF;
+		END PROCESS;
+	
+	
+	-- process to draw cursor current pixel address is covered by cursor position
+	draw_cursor : PROCESS (cursor_x, cursor_y, pixel_row, pixel_col) IS
 	BEGIN
 		IF (pixel_col >= cursor_x - cursor_size) AND
 		 (pixel_col <= cursor_x + cursor_size) AND
@@ -58,44 +71,16 @@ BEGIN
 		END IF;
 		END PROCESS;
 		
-	bdraw1 : PROCESS (ballx(0), ball_y1) IS
-	BEGIN
-		IF (pixel_col >= ballx(0) - size_rest) AND
-		 (pixel_col <= ballx(0) + size_rest) AND
-			 (pixel_row >= ball_y1 - size_rest) AND
-			 (pixel_row <= ball_y1 + size_rest) THEN
-				ball_on(1) <= '1';
-		END IF;
-		END PROCESS;
-		
-	bdraw2 : PROCESS (ball_x2, ball_y2) IS
-	BEGIN
-		IF (pixel_col >= ball_x2 - size_rest) AND
-		 (pixel_col <= ball_x2 + size_rest) AND
-			 (pixel_row >= ball_y2 - size_rest) AND
-			 (pixel_row <= ball_y2 + size_rest) THEN
-				ball_on(2) <= '1';
-		END IF;
-		END PROCESS;
-		
-	bdraw3 : PROCESS (ball_x3, ball_y3) IS
-	BEGIN
-		IF (pixel_col >= ball_x3 - size_rest) AND
-		 (pixel_col <= ball_x3 + size_rest) AND
-			 (pixel_row >= ball_y3 - size_rest) AND
-			 (pixel_row <= ball_y3 + size_rest) THEN
-				ball_on(3) <= '1';
-		END IF;
-		END PROCESS;
+	
 		
 		-- process to move ball once every frame (i.e. once every vsync pulse)
 		mball : PROCESS
 		BEGIN
 			WAIT UNTIL rising_edge(v_sync);
 			
-			IF BTNU = '1' AND cursor_y + (2*cursor_size) <= 600 THEN
+			IF BTNU = '1' AND cursor_y >= (2*cursor_size) THEN
 			     ball_y_motion <= "11111111100";
-			ELSIF BTND = '1' AND cursor_y >= (2*cursor_size) THEN
+			ELSIF BTND = '1' AND cursor_y + (2*cursor_size) <= 600 THEN
 			     ball_y_motion <= "00000000100";
 			ELSE
 		         ball_y_motion <= "00000000000";
