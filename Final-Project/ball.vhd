@@ -26,7 +26,7 @@ ARCHITECTURE Behavioral OF ball IS
     signal bally : c_mem_t;
 	CONSTANT cursor_size  : INTEGER := 8;    -- "RADIUS"
 	CONSTANT ball_size :   INTEGER := 50;
-	SIGNAL ball_on : STD_LOGIC_VECTOR(0 DOWNTO 47); -- indicates whether ball / pixel is over current pixel position
+	SIGNAL ball_on : STD_LOGIC_VECTOR(47 DOWNTO 0); -- indicates whether ball / pixel is over current pixel position
 	-- current ball position - intitialized to center of screen
 	SIGNAL cursor_x  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
 	SIGNAL cursor_y  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
@@ -35,6 +35,10 @@ ARCHITECTURE Behavioral OF ball IS
 	SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 	signal temp : INTEGER;
 BEGIN
+
+    red <= NOT ball_on(1) AND NOT ball_on(0);
+	green <= NOT ball_on(9) AND NOT ball_on(0);
+	blue  <= NOT ball_on(22) AND NOT ball_on(0);
 
     forloop : PROCESS IS
     BEGIN
@@ -46,6 +50,7 @@ BEGIN
                 temp <= temp + 1;
             end loop;
         end loop;
+        wait;
     END PROCESS;
 	
 	-- process to draw ball current pixel address is covered by ball position
@@ -60,10 +65,6 @@ BEGIN
 		  END IF;
 	   end loop;
     END PROCESS;
-	
-    red <= NOT ball_on(5) AND NOT ball_on(0);
-	green <= NOT ball_on(9) AND NOT ball_on(0);
-	blue  <= NOT ball_on(22) AND NOT ball_on(0);
 	
 	-- process to draw cursor current pixel address is covered by cursor position
 	draw_cursor : PROCESS (cursor_x, cursor_y, pixel_row, pixel_col) IS
