@@ -21,7 +21,7 @@ ENTITY ball IS
 END ball;
 
 ARCHITECTURE Behavioral OF ball IS
-	CONSTANT size0  : INTEGER := 8;
+	CONSTANT size0  : INTEGER := 8;    -- "RADIUS"
 	CONSTANT size_rest :   INTEGER := 50;
 	SIGNAL ball_on : STD_LOGIC_VECTOR(3 DOWNTO 0); -- indicates whether ball / pixel is over current pixel position
 	-- current ball position - intitialized to center of screen
@@ -46,6 +46,36 @@ BEGIN
 			 (pixel_row >= ball_y0 - size0) AND
 			 (pixel_row <= ball_y0 + size0) THEN
 				ball_on(0) <= '1';
+		END IF;
+		END PROCESS;
+		
+	bdraw1 : PROCESS (ball_x1, ball_y1) IS
+	BEGIN
+		IF (pixel_col >= ball_x1 - size_rest) AND
+		 (pixel_col <= ball_x1 + size_rest) AND
+			 (pixel_row >= ball_y1 - size_rest) AND
+			 (pixel_row <= ball_y1 + size_rest) THEN
+				ball_on(1) <= '1';
+		END IF;
+		END PROCESS;
+		
+	bdraw2 : PROCESS (ball_x2, ball_y2) IS
+	BEGIN
+		IF (pixel_col >= ball_x2 - size_rest) AND
+		 (pixel_col <= ball_x2 + size_rest) AND
+			 (pixel_row >= ball_y2 - size_rest) AND
+			 (pixel_row <= ball_y2 + size_rest) THEN
+				ball_on(2) <= '1';
+		END IF;
+		END PROCESS;
+		
+	bdraw3 : PROCESS (ball_x3, ball_y3) IS
+	BEGIN
+		IF (pixel_col >= ball_x3 - size_rest) AND
+		 (pixel_col <= ball_x3 + size_rest) AND
+			 (pixel_row >= ball_y3 - size_rest) AND
+			 (pixel_row <= ball_y3 + size_rest) THEN
+				ball_on(3) <= '1';
 		END IF;
 		END PROCESS;
 		
