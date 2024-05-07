@@ -21,6 +21,8 @@ ENTITY ball IS
 END ball;
 
 ARCHITECTURE Behavioral OF ball IS
+    type c_mem_t is array (0 to 47) of std_logic_vector(10 downto 0);
+    signal ballx : c_mem_t;
 	CONSTANT cursor_size  : INTEGER := 8;    -- "RADIUS"
 	CONSTANT size_rest :   INTEGER := 50;
 	SIGNAL ball_on : STD_LOGIC_VECTOR(3 DOWNTO 0); -- indicates whether ball / pixel is over current pixel position
@@ -37,10 +39,11 @@ ARCHITECTURE Behavioral OF ball IS
 	SIGNAL ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 	SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 BEGIN
+    ballx(0) <= CONV_STD_LOGIC_VECTOR(50, 11);
+    
 	red <= NOT ball_on(1) AND NOT ball_on(0);
 	green <= NOT ball_on(2) AND NOT ball_on(0);
 	blue  <= NOT ball_on(3) AND NOT ball_on(0);
-	
 	
 	
 	
@@ -55,10 +58,10 @@ BEGIN
 		END IF;
 		END PROCESS;
 		
-	bdraw1 : PROCESS (ball_x1, ball_y1) IS
+	bdraw1 : PROCESS (ballx(0), ball_y1) IS
 	BEGIN
-		IF (pixel_col >= ball_x1 - size_rest) AND
-		 (pixel_col <= ball_x1 + size_rest) AND
+		IF (pixel_col >= ballx(0) - size_rest) AND
+		 (pixel_col <= ballx(0) + size_rest) AND
 			 (pixel_row >= ball_y1 - size_rest) AND
 			 (pixel_row <= ball_y1 + size_rest) THEN
 				ball_on(1) <= '1';
