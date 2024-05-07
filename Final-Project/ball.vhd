@@ -21,38 +21,42 @@ ENTITY ball IS
 END ball;
 
 ARCHITECTURE Behavioral OF ball IS
-	CONSTANT size  : INTEGER := 8;
-	SIGNAL ball_on : STD_LOGIC; -- indicates whether ball is over current pixel position
+	CONSTANT size0  : INTEGER := 8;
+	CONSTANT size_rest :   INTEGER := 50;
+	SIGNAL ball_on : STD_LOGIC_VECTOR(3 DOWNTO 0); -- indicates whether ball / pixel is over current pixel position
 	-- current ball position - intitialized to center of screen
-	SIGNAL ball_x  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
-	SIGNAL ball_y  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
-	-- current ball motion - initialized to +4 pixels/frame
-	SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000100";
+	SIGNAL ball_x0  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
+	SIGNAL ball_y0  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
+	-- current ball motion - initialized to 0 pixels/frame (00000000000)
+	SIGNAL ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
+	SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 BEGIN
-	red <= '1'; -- color setup for red ball on white background
-	green <= NOT ball_on;
-	blue  <= NOT ball_on;
+	red <= NOT ball_on(1);
+	green <= NOT ball_on(2);
+	blue  <= NOT ball_on(3);
+	
+	
+	
+	
 	-- process to draw ball current pixel address is covered by ball position
-	bdraw : PROCESS (ball_x, ball_y, pixel_row, pixel_col) IS
+	bdraw0 : PROCESS (ball_x0, ball_y0, pixel_row, pixel_col) IS
 	BEGIN
-		IF (pixel_col >= ball_x - size) AND
-		 (pixel_col <= ball_x + size) AND
-			 (pixel_row >= ball_y - size) AND
-			 (pixel_row <= ball_y + size) THEN
-				ball_on <= '1';
-		ELSE
-			ball_on <= '0';
+		IF (pixel_col >= ball_x0 - size0) AND
+		 (pixel_col <= ball_x0 + size0) AND
+			 (pixel_row >= ball_y0 - size0) AND
+			 (pixel_row <= ball_y0 + size0) THEN
+				ball_on(0) <= '1';
 		END IF;
 		END PROCESS;
-			
+		
 		-- process to move ball once every frame (i.e. once every vsync pulse)
 		mball : PROCESS
 		BEGIN
 			WAIT UNTIL rising_edge(v_sync);
 			
-			IF BTNU = '1' AND ball_y >= (2*size) THEN
+			IF BTNU = '1' AND ball_y + (2*size) <= 600 THEN
 			     ball_y_motion <= "11111111100";
-			ELSIF BTND = '1' AND ball_y + (2*size) <= 600 THEN
+			ELSIF BTND = '1' AND ball_y >= (2*size) THEN
 			     ball_y_motion <= "00000000100";
 			ELSE
 		         ball_y_motion <= "00000000000";
@@ -64,11 +68,6 @@ BEGIN
 			     ball_x_motion <= "11111111100";
 			ELSE
 		         ball_x_motion <= "00000000000";
-			END IF;
-			
-			IF BTNC = '1' THEN
-			     ball_x <= CONV_STD_LOGIC_VECTOR(400, 11);
-			     ball_y <= CONV_STD_LOGIC_VECTOR(300, 11);
 			END IF;
 			
 			ball_x <= ball_x + ball_x_motion; -- compute next ball position
