@@ -37,17 +37,18 @@ ARCHITECTURE Behavioral OF ball IS
 	signal temp : INTEGER := 0;
 BEGIN
 
-color_proc : PROCESS (ball_on) IS
-BEGIN
+--color_proc : PROCESS IS
+--BEGIN
+--    WAIT UNTIL rising_edge(v_sync);
+    
     red <= NOT ball_on(0) AND NOT cursor_on;
 	green <= NOT ball_on(9) AND NOT cursor_on;
 	blue  <= NOT ball_on(22) AND NOT cursor_on;
-END PROCESS;
+--END PROCESS;
 
+    -- sets the x and y positions for all 48 balls.
     forloop : PROCESS IS
     BEGIN
-        WAIT UNTIL rising_edge(v_sync);
-        
         for i in 0 to 5 loop
             for j in 0 to 7 loop
                 ballx(temp) <= CONV_STD_LOGIC_VECTOR(j*100+50, 11);
@@ -61,22 +62,21 @@ END PROCESS;
 	-- process to draw ball current pixel address is covered by ball position
 	bdraw : PROCESS IS
 	BEGIN
-	   WAIT UNTIL rising_edge(v_sync);
-	   
 	   for i in 0 to 47 loop
 	       IF (pixel_col >= ballx(i) - ball_size) AND
 		      (pixel_col <= ballx(i) + ball_size) AND
 			  (pixel_row >= bally(i) - ball_size) AND
 			  (pixel_row <= bally(i) + ball_size) THEN
 			     ball_on(i) <= '1';
-		  END IF;
+		   END IF;
 	   end loop;
+	   wait;
     END PROCESS;
 	
 	-- process to draw cursor current pixel address is covered by cursor position
 	draw_cursor : PROCESS IS
 	BEGIN
-	   WAIT UNTIL rising_edge(v_sync);
+	   --WAIT UNTIL rising_edge(v_sync);
 	
 		IF (pixel_col >= cursor_x - cursor_size) AND
 		   (pixel_col <= cursor_x + cursor_size) AND
@@ -84,32 +84,30 @@ END PROCESS;
 			 (pixel_row <= cursor_y + cursor_size) THEN
 				cursor_on <= '1';
 		END IF;
-		END PROCESS;
+    END PROCESS;
 		
-	
-		
-		-- process to move ball once every frame (i.e. once every vsync pulse)
-		mball : PROCESS
-		BEGIN
-			WAIT UNTIL rising_edge(v_sync);
+    -- process to move ball once every frame (i.e. once every vsync pulse)
+    mball : PROCESS
+    BEGIN
+        WAIT UNTIL rising_edge(v_sync);
 			
-			IF BTNU = '1' AND cursor_y >= (2*cursor_size) THEN
-			     cursor_y_motion <= "11111111100";
-			ELSIF BTND = '1' AND cursor_y + (2*cursor_size) <= 600 THEN
-			     cursor_y_motion <= "00000000100";
-			ELSE
-		         cursor_y_motion <= "00000000000";
-			END IF;
+        IF BTNU = '1' AND cursor_y >= (2*cursor_size) THEN
+             cursor_y_motion <= "11111111100";
+        ELSIF BTND = '1' AND cursor_y + (2*cursor_size) <= 600 THEN
+             cursor_y_motion <= "00000000100";
+        ELSE
+             cursor_y_motion <= "00000000000";
+        END IF;
+        
+        IF BTNR = '1' AND cursor_x + (2*cursor_size) <= 800 THEN
+             cursor_x_motion <= "00000000100";
+        ELSIF BTNL = '1' AND cursor_x >= (2*cursor_size) THEN
+             cursor_x_motion <= "11111111100";
+        ELSE
+             cursor_x_motion <= "00000000000";
+        END IF;
 			
-			IF BTNR = '1' AND cursor_x + (2*cursor_size) <= 800 THEN
-			     cursor_x_motion <= "00000000100";
-			ELSIF BTNL = '1' AND cursor_x >= (2*cursor_size) THEN
-			     cursor_x_motion <= "11111111100";
-			ELSE
-		         cursor_x_motion <= "00000000000";
-			END IF;
-			
-			cursor_x <= cursor_x + cursor_x_motion; -- compute next ball position
-			cursor_y <= cursor_y + cursor_y_motion; -- compute next ball position
-		END PROCESS;
+        cursor_x <= cursor_x + cursor_x_motion; -- compute next ball position
+        cursor_y <= cursor_y + cursor_y_motion; -- compute next ball position
+    END PROCESS;
 END Behavioral;
