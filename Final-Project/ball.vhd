@@ -41,24 +41,17 @@ ARCHITECTURE Behavioral OF ball IS
 BEGIN
 
     -- Checks if any ball should be colored.
-    color_proc : PROCESS IS
+    color_proc : PROCESS (ball_on) IS
     BEGIN
-        WAIT UNTIL rising_edge(v_sync);
-        
         tempred <= '1';
         tempblue <= '1';
         tempgreen <= '1';
-            
         for i in 0 to 47 loop
-            tempred <= tempred AND ball_on(i);
-            tempblue <= tempblue AND NOT ball_on(i);
-            tempgreen <= tempgreen AND NOT ball_on(i);
+            red <= tempred AND ball_on(i) AND NOT cursor_on;
+            blue <= tempblue AND NOT ball_on(i) AND NOT cursor_on;
+            green <= tempgreen AND NOT ball_on(i) AND NOT cursor_on;
         end loop;
     END PROCESS;
-
-    red <= tempred AND NOT cursor_on;
-	green <= tempblue AND NOT cursor_on;
-	blue  <= tempgreen AND NOT cursor_on;
 
     -- sets the x and y positions for all 48 balls.
     forloop : PROCESS
