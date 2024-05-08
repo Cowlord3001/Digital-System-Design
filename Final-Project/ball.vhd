@@ -35,19 +35,33 @@ ARCHITECTURE Behavioral OF ball IS
 	SIGNAL cursor_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 	SIGNAL cursor_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
 	signal temp : INTEGER := 0;
+	signal tempred : STD_LOGIC;
+	signal tempblue : STD_LOGIC;
+	signal tempgreen : STD_LOGIC;
 BEGIN
 
---color_proc : PROCESS IS
---BEGIN
---    WAIT UNTIL rising_edge(v_sync);
-    
-    red <= NOT ball_on(0) AND NOT cursor_on;
-	green <= NOT ball_on(9) AND NOT cursor_on;
-	blue  <= NOT ball_on(22) AND NOT cursor_on;
---END PROCESS;
+    -- Checks if any ball should be colored.
+    color_proc : PROCESS IS
+    BEGIN
+        WAIT UNTIL rising_edge(v_sync);
+        
+        tempred <= '1';
+        tempblue <= '1';
+        tempgreen <= '1';
+            
+        for i in 0 to 47 loop
+            tempred <= tempred AND ball_on(i);
+            tempblue <= tempblue AND NOT ball_on(i);
+            tempgreen <= tempgreen AND NOT ball_on(i);
+        end loop;
+    END PROCESS;
+
+    red <= tempred AND NOT cursor_on;
+	green <= tempblue AND NOT cursor_on;
+	blue  <= tempgreen AND NOT cursor_on;
 
     -- sets the x and y positions for all 48 balls.
-    forloop : PROCESS IS
+    forloop : PROCESS
     BEGIN
         for i in 0 to 5 loop
             for j in 0 to 7 loop
@@ -60,7 +74,7 @@ BEGIN
     END PROCESS;
 	
 	-- process to draw ball current pixel address is covered by ball position
-	bdraw : PROCESS IS
+	bdraw : PROCESS
 	BEGIN
 	   for i in 0 to 47 loop
 	       IF (pixel_col >= ballx(i) - ball_size) AND
@@ -74,10 +88,8 @@ BEGIN
     END PROCESS;
 	
 	-- process to draw cursor current pixel address is covered by cursor position
-	draw_cursor : PROCESS IS
+	draw_cursor : PROCESS (cursor_x, cursor_y, pixel_row, pixel_col) IS
 	BEGIN
-	   --WAIT UNTIL rising_edge(v_sync);
-	
 		IF (pixel_col >= cursor_x - cursor_size) AND
 		   (pixel_col <= cursor_x + cursor_size) AND
 			 (pixel_row >= cursor_y - cursor_size) AND
