@@ -27,6 +27,7 @@ ARCHITECTURE Behavioral OF ball IS
 	CONSTANT cursor_size  : INTEGER := 8;    -- "RADIUS"
 	CONSTANT ball_size :   INTEGER := 100;
 	SIGNAL ball_on : STD_LOGIC_VECTOR(11 DOWNTO 0) := "000000000000"; -- indicates whether ball is over current pixel position
+	SIGNAL flag : STD_LOGIC_VECTOR(11 DOWNTO 0) := "000000000000";    -- indicates if we have already collided with a ball
 	SIGNAL cursor_on : STD_LOGIC; -- indicates whether cursor is over current pixel position
 	-- current ball position - intitialized to center of screen
 	SIGNAL cursor_x  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
@@ -64,11 +65,6 @@ BEGIN
     bally(10) <= CONV_STD_LOGIC_VECTOR(500, 11);
     bally(11) <= CONV_STD_LOGIC_VECTOR(500, 11);
     
-    --white <= NOT ball_on(0) AND NOT ball_on(1) AND NOT ball_on(2) AND NOT ball_on(3) AND
-    --            NOT ball_on(4) AND NOT ball_on(5) AND NOT ball_on(6) AND NOT ball_on(7) AND
-    --            NOT ball_on(8) AND NOT ball_on(9) AND NOT ball_on(10) AND NOT ball_on(11) AND
-    --            NOT cursor_on;
-    
     red <= NOT ball_on(0) AND NOT ball_on(3) AND NOT ball_on(6) AND NOT ball_on(9) AND NOT cursor_on;
     blue <= NOT ball_on(1) AND NOT ball_on(4) AND NOT ball_on(7) AND NOT ball_on(10) AND NOT cursor_on;
     green <= NOT ball_on(2) AND NOT ball_on(5) AND NOT ball_on(8) AND NOT ball_on(11) AND NOT cursor_on;
@@ -84,12 +80,15 @@ BEGIN
                 IF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
                    (ballx(0) + ball_size >= cursor_x + cursor_size) AND
                        (bally(0) - ball_size <= cursor_y - cursor_size) AND
-			           (bally(0) + ball_size >= cursor_y + cursor_size) THEN
+			           (bally(0) + ball_size >= cursor_y + cursor_size) AND 
+			           (flag(0) = '0') THEN
 			                ball_on(0) <= ball_on(0) XOR '1';
+			                flag(0) <= '1';
 			    END IF;
        ELSE
            ball_on(0) <= ball_on(0);
-       END IF;       
+           flag(0) <= '0';
+       END IF;
 	
        IF (pixel_col >= ballx(1) - ball_size) AND
           (pixel_col <= ballx(1) + ball_size) AND
