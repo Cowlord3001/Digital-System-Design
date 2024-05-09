@@ -1,3 +1,7 @@
+red <= NOT ball_on(0) AND NOT ball_on(3) AND NOT ball_on(6) AND NOT ball_on(9) AND NOT cursor_on NOT ball_on(12) AND NOT ball_on(15) AND NOT ball_on(18) AND NOT ball_on(21) AND NOT ball_on(24) AND NOT ball_on(27) AND NOT ball_on(30) AND NOT ball_on(33) AND NOT ball_on(36) AND NOT ball_on(39) AND NOT ball_on(42) AND NOT ball_on(45);
+    blue <= NOT ball_on(1) AND NOT ball_on(4) AND NOT ball_on(7) AND NOT ball_on(10) AND NOT cursor_on NOT ball_on(13) AND NOT ball_on(16) AND NOT ball_on(19) AND NOT ball_on(22) AND NOT ball_on(25) AND NOT ball_on(28) AND NOT ball_on(31) AND NOT ball_on(34) AND NOT ball_on(37) AND NOT ball_on(40) AND NOT ball_on(43) AND NOT ball_on(46);
+    green <= NOT ball_on(2) AND NOT ball_on(5) AND NOT ball_on(8) AND NOT ball_on(11) AND NOT cursor_on NOT ball_on(14) AND NOT ball_on(17) AND NOT ball_on(20) AND NOT ball_on(23) AND NOT ball_on(26) AND NOT ball_on(29) AND NOT ball_on(32) AND NOT ball_on(35) AND NOT ball_on(38) AND NOT ball_on(41) AND NOT ball_on(44) AND NOT ball_on(47); 
+
 IF (pixel_col >= ballx(12) - ball_size) AND
           (pixel_col <= ballx(12) + ball_size) AND
              (pixel_row >= bally(12) - ball_size) AND
