@@ -80,14 +80,17 @@ BEGIN
                 IF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
                    (ballx(0) + ball_size >= cursor_x + cursor_size) AND
                        (bally(0) - ball_size <= cursor_y - cursor_size) AND
-			           (bally(0) + ball_size >= cursor_y + cursor_size) THEN
-			           If (flag(0) = '0') THEN
+			           (bally(0) + ball_size >= cursor_y + cursor_size) AND
+			           (flag(0) = '0') THEN
 			                ball_on(0) <= ball_on(0) XOR '1';
 			                flag(0) <= '1';
-			           end if;
+			    ELSIF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
+                      (ballx(0) + ball_size >= cursor_x + cursor_size) AND
+                         (bally(0) - ball_size <= cursor_y - cursor_size) AND
+			             (bally(0) + ball_size >= cursor_y + cursor_size) AND
+			             (flag(0) = '1') THEN
 			    ELSE
-                   flag(0) <= '0';
-                   --ball_on(0) <= ball_on(0);
+			        flag(0) <= '0';
 			    END IF;
        ELSE
            ball_on(0) <= ball_on(0);
@@ -97,10 +100,25 @@ BEGIN
           (pixel_col <= ballx(1) + ball_size) AND
              (pixel_row >= bally(1) - ball_size) AND
              (pixel_row <= bally(1) + ball_size) THEN
-                ball_on(1) <= '1';
+                IF (ballx(1) - ball_size <= cursor_x - cursor_size) AND
+                   (ballx(1) + ball_size >= cursor_x + cursor_size) AND
+                       (bally(1) - ball_size <= cursor_y - cursor_size) AND
+			           (bally(1) + ball_size >= cursor_y + cursor_size) AND
+			           (flag(1) = '0') THEN
+			                ball_on(1) <= ball_on(1) XOR '1';
+			                flag(1) <= '1';
+			    ELSIF (ballx(1) - ball_size <= cursor_x - cursor_size) AND
+                      (ballx(1) + ball_size >= cursor_x + cursor_size) AND
+                         (bally(1) - ball_size <= cursor_y - cursor_size) AND
+			             (bally(1) + ball_size >= cursor_y + cursor_size) AND
+			             (flag(1) = '1') THEN
+			    ELSE
+			        flag(1) <= '0';
+			    END IF;
        ELSE
-           ball_on(1) <= '0';     
+           ball_on(1) <= ball_on(1);
        END IF;
+
 	
        IF (pixel_col >= ballx(2) - ball_size) AND
           (pixel_col <= ballx(2) + ball_size) AND
