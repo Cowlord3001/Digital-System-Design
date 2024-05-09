@@ -11,7 +11,6 @@ ENTITY vga_top IS
         vga_hsync : OUT STD_LOGIC;
         vga_vsync : OUT STD_LOGIC;
         SW        : IN std_logic_vector(2 DOWNTO 0);
-		BTNC      : IN std_logic;
 		BTNU      : IN std_logic;
 		BTND      : IN std_logic;
 		BTNL      : IN std_logic;
@@ -34,7 +33,6 @@ ARCHITECTURE Behavioral OF vga_top IS
             green : OUT STD_LOGIC;
             blue : OUT STD_LOGIC;
             SW        : IN std_logic_vector(2 DOWNTO 0);
-		    BTNC      : IN std_logic;
 		    BTNU      : IN std_logic;
 		    BTND      : IN std_logic;
 	       	BTNL      : IN std_logic;
@@ -82,7 +80,6 @@ BEGIN
         green     => S_green, 
         blue      => S_blue,
         SW        => SW,
-		BTNC      => BTNC,
 		BTNU      => BTNU,
 		BTND      => BTND,
 		BTNL      => BTNL,
