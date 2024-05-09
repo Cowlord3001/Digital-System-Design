@@ -38,24 +38,47 @@ ARCHITECTURE Behavioral OF ball IS
 	signal tempred : STD_LOGIC;
 	signal tempblue : STD_LOGIC;
 	signal tempgreen : STD_LOGIC;
+	signal clock : std_logic_vector(20 downto 0);
 BEGIN
-
+    clock_proc: PROCESS
+    BEGIN
+    WAIT UNTIL rising_edge(v_sync);
+        clock <= clock + 1;
+        end process;
     -- Checks if any ball should be colored.
     color_proc : PROCESS (ball_on) IS
     BEGIN
+    --WAIT UNTIL rising_edge(clock(20));
+    if ball_on > 0 then
+        tempred <= '1';
+        tempblue <= '0';
+        tempgreen <= '0';
+        else
         tempred <= '1';
         tempblue <= '1';
         tempgreen <= '1';
-        for i in 0 to 47 loop
-            red <= tempred AND ball_on(i) AND NOT cursor_on;
-            blue <= tempblue AND NOT ball_on(i) AND NOT cursor_on;
-            green <= tempgreen AND NOT ball_on(i) AND NOT cursor_on;
-        end loop;
+        end if;
+        --for i in 0 to 47 loop
+        --IF i < 16 THEN
+            red <= tempred AND NOT cursor_on;
+            blue <= tempblue AND NOT cursor_on;
+            green <= tempgreen AND NOT cursor_on;
+        --ELSIF (i > 15) AND (i < 32) THEN
+        --    red <= tempred AND NOT ball_on(i) AND NOT cursor_on;
+        --    blue <= tempblue AND ball_on(i) AND NOT cursor_on;
+        --    green <= tempgreen AND NOT ball_on(i) AND NOT cursor_on;
+        --ELSE
+        --    red <= tempred AND NOT ball_on(i) AND NOT cursor_on;
+        --    blue <= tempblue AND ball_on(i) AND NOT cursor_on;
+        --    green <= tempgreen AND NOT ball_on(i) AND NOT cursor_on;
+        --END IF;
+        --end loop;
     END PROCESS;
 
     -- sets the x and y positions for all 48 balls.
     forloop : PROCESS
     BEGIN
+    --WAIT UNTIL rising_edge(clock(20));
         for i in 0 to 5 loop
             for j in 0 to 7 loop
                 ballx(temp) <= CONV_STD_LOGIC_VECTOR(j*100+50, 11);
@@ -67,22 +90,25 @@ BEGIN
     END PROCESS;
 	
 	-- process to draw ball current pixel address is covered by ball position
-	bdraw : PROCESS
+	bdraw : PROCESS (ballx, bally) IS
 	BEGIN
+	--WAIT UNTIL rising_edge(clock(20));
 	   for i in 0 to 47 loop
 	       IF (pixel_col >= ballx(i) - ball_size) AND
 		      (pixel_col <= ballx(i) + ball_size) AND
 			  (pixel_row >= bally(i) - ball_size) AND
 			  (pixel_row <= bally(i) + ball_size) THEN
 			     ball_on(i) <= '1';
+        ELSE
+            ball_on(i) <= '0';     
 		   END IF;
 	   end loop;
-	   wait;
     END PROCESS;
 	
 	-- process to draw cursor current pixel address is covered by cursor position
 	draw_cursor : PROCESS (cursor_x, cursor_y, pixel_row, pixel_col) IS
 	BEGIN
+	--WAIT UNTIL rising_edge(clock(20));
 		IF (pixel_col >= cursor_x - cursor_size) AND
 		   (pixel_col <= cursor_x + cursor_size) AND
 			 (pixel_row >= cursor_y - cursor_size) AND
