@@ -18,4 +18,28 @@ This project requires a VGA connector and monitor. When the code is run, a black
 - Click design sources and copy the VHDL code from clk_wiz_0.vhd, clk_wiz_0_clk_wiz.vhd, vga_sync.vhd, ball.vhd, and vga_top.vhd.
 - Click constraints and copy the code from vga_top.xdc.
 - As an alternative, you can instead download files from GitHub and import them into your project when creating the project. The source file or files would still be imported during the Source step, and the constraint file or files would still be imported during the Constraints step. This was our team's preferred method.
+#### Step 2 - Run Synthesis and Implementation
+#### Step 3 - Generate Bitstream, open Hardware Manager, and program the FPGA.
+#### Step 4 - Have fun!
+- If you find yourself sucked into the dark beyond the stars (i.e. Offscreen), program the board again in the Hardware Manager to reset.
 
+### Inputs and Outputs
+- This project uses the same inputs and outputs as **Lab 3: Bouncing Ball**, as well as a few additional inputs:
+#### OLD
+
+*Clock Pin:*
+- PIN E3
+
+*VGA Connector Pins:*
+- PIN A3, B4, C5  (red)
+- PIN C6, A5, B6  (green)
+- PIN B7, C7      (blue)
+- PIN B11, B12    (sync)
+
+#### NEW
+
+*Switch Pins:*
+- PIN J15, L16, M13
+
+*Button Pins:*
+- PIN M18, P17, M17, P18
