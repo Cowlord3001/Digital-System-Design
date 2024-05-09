@@ -25,6 +25,7 @@ ARCHITECTURE Behavioral OF ball IS
     signal ballx : c_mem_t;     -- NOTE: We refer to the colored squares as 'balls'
     signal bally : c_mem_t;     --        Do NOT question this!
 	signal cursor_size  : INTEGER := 8;    -- "RADIUS"
+	signal cursor_size_mod : INTEGER := 8;
 	CONSTANT ball_size :   INTEGER := 100;
 	SIGNAL ball_on : STD_LOGIC_VECTOR(11 DOWNTO 0) := "000000000000"; -- indicates whether ball is over current pixel position
 	SIGNAL flag : STD_LOGIC_VECTOR(11 DOWNTO 0) := "000000000000";    -- indicates if we have already collided with a ball
@@ -215,7 +216,7 @@ BEGIN
 	-- process to change the cursor's size when the switches are pressed.
 	cursorSZ : process (SW) is
     begin
-        cursor_size <= cursor_size*conv_integer(SW);
+        cursor_size <= cursor_size_mod*conv_integer(SW);
     end process;
     
 	
