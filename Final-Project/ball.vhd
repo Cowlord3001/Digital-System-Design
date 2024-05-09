@@ -80,14 +80,17 @@ BEGIN
                 IF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
                    (ballx(0) + ball_size >= cursor_x + cursor_size) AND
                        (bally(0) - ball_size <= cursor_y - cursor_size) AND
-			           (bally(0) + ball_size >= cursor_y + cursor_size) AND 
-			           (flag(0) = '0') THEN
+			           (bally(0) + ball_size >= cursor_y + cursor_size) THEN
+			           If (flag(0) = '0') THEN
 			                ball_on(0) <= ball_on(0) XOR '1';
 			                flag(0) <= '1';
+			           end if;
+			    ELSE
+                   flag(0) <= '0';
+                   --ball_on(0) <= ball_on(0);
 			    END IF;
        ELSE
            ball_on(0) <= ball_on(0);
-           flag(0) <= '0';
        END IF;
 	
        IF (pixel_col >= ballx(1) - ball_size) AND
