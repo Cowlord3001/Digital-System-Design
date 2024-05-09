@@ -26,7 +26,7 @@ ARCHITECTURE Behavioral OF ball IS
     signal bally : c_mem_t;
 	CONSTANT cursor_size  : INTEGER := 8;    -- "RADIUS"
 	CONSTANT ball_size :   INTEGER := 100;
-	SIGNAL ball_on : STD_LOGIC_VECTOR(11 DOWNTO 0); -- indicates whether ball is over current pixel position
+	SIGNAL ball_on : STD_LOGIC_VECTOR(11 DOWNTO 0) := "000000000000"; -- indicates whether ball is over current pixel position
 	SIGNAL cursor_on : STD_LOGIC; -- indicates whether cursor is over current pixel position
 	-- current ball position - intitialized to center of screen
 	SIGNAL cursor_x  : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
@@ -69,9 +69,9 @@ BEGIN
     --            NOT ball_on(8) AND NOT ball_on(9) AND NOT ball_on(10) AND NOT ball_on(11) AND
     --            NOT cursor_on;
     
-    red <= NOT ball_on(0) AND NOT ball_on(3) AND NOT ball_on(6) AND NOT ball_on(9) AND cursor_on;
-    blue <= NOT ball_on(1) AND NOT ball_on(4) AND NOT ball_on(7) AND NOT ball_on(10) AND cursor_on;
-    green <= NOT ball_on(2) AND NOT ball_on(5) AND NOT ball_on(8) AND NOT ball_on(11) AND cursor_on;
+    red <= NOT ball_on(0) AND NOT ball_on(3) AND NOT ball_on(6) AND NOT ball_on(9) AND NOT cursor_on;
+    blue <= NOT ball_on(1) AND NOT ball_on(4) AND NOT ball_on(7) AND NOT ball_on(10) AND NOT cursor_on;
+    green <= NOT ball_on(2) AND NOT ball_on(5) AND NOT ball_on(8) AND NOT ball_on(11) AND NOT cursor_on;
 	
 	-- process to draw ball current pixel address is covered by ball position
 	bdraw : PROCESS (ballx, bally) IS
@@ -81,36 +81,41 @@ BEGIN
           (pixel_col <= ballx(0) + ball_size) AND
              (pixel_row >= bally(0) - ball_size) AND
              (pixel_row <= bally(0) + ball_size) THEN
-                ball_on(0) <= '0';
+                IF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
+                   (ballx(0) + ball_size >= cursor_x + cursor_size) AND
+                       (bally(0) - ball_size <= cursor_y - cursor_size) AND
+			           (bally(0) + ball_size >= cursor_y + cursor_size) THEN
+			                ball_on(0) <= ball_on(0) XOR '1';
+			    END IF;
        ELSE
-           ball_on(0) <= '1';     
-       END IF;
+           ball_on(0) <= ball_on(0);
+       END IF;       
 	
        IF (pixel_col >= ballx(1) - ball_size) AND
           (pixel_col <= ballx(1) + ball_size) AND
              (pixel_row >= bally(1) - ball_size) AND
              (pixel_row <= bally(1) + ball_size) THEN
-                ball_on(1) <= '0';
+                ball_on(1) <= '1';
        ELSE
-           ball_on(1) <= '1';     
+           ball_on(1) <= '0';     
        END IF;
 	
        IF (pixel_col >= ballx(2) - ball_size) AND
           (pixel_col <= ballx(2) + ball_size) AND
              (pixel_row >= bally(2) - ball_size) AND
              (pixel_row <= bally(2) + ball_size) THEN
-                ball_on(2) <= '0';
+                ball_on(2) <= '1';
        ELSE
-           ball_on(2) <= '1';     
+           ball_on(2) <= '0';     
        END IF;
 	
        IF (pixel_col >= ballx(3) - ball_size) AND
           (pixel_col <= ballx(3) + ball_size) AND
              (pixel_row >= bally(3) - ball_size) AND
              (pixel_row <= bally(3) + ball_size) THEN
-                ball_on(3) <= '0';
+                ball_on(3) <= '1';
        ELSE
-           ball_on(3) <= '1';     
+           ball_on(3) <= '0';     
        END IF;
 	
        IF (pixel_col >= ballx(4) - ball_size) AND
@@ -187,18 +192,16 @@ BEGIN
        
     END PROCESS;
     
-    collision : PROCESS (cursor_x,cursor_y) IS
-    BEGIN
     
-       IF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
-          (ballx(0) + ball_size >= cursor_x + cursor_size) AND
-             (bally(0) - ball_size <= cursor_y - cursor_size) AND
-			 (bally(0) + ball_size >= cursor_y + cursor_size) THEN
-			    ball_on(0) <= '0';
-       END IF;
-       
-    END PROCESS;
-    
+--    collision : PROCESS (cursor_x,cursor_y) IS
+--    BEGIN
+--       IF (ballx(0) - ball_size <= cursor_x - cursor_size) AND
+--          (ballx(0) + ball_size >= cursor_x + cursor_size) AND
+--             (bally(0) - ball_size <= cursor_y - cursor_size) AND
+--			 (bally(0) + ball_size >= cursor_y + cursor_size) THEN
+--			    ball_on(0) <= '1';
+--       END IF;
+--    END PROCESS;
     
 	
 	-- process to draw cursor current pixel address is covered by cursor position
