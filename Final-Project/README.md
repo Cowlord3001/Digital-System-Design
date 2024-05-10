@@ -95,5 +95,24 @@ The exact dates and times of each iteration were not tracked in full due to the 
 
 *Note: The descriptions and titles of each commit devolved significantly during the final day, showing the team's similarly-devolving mental state. The phrases "we are so back," "it's so over," and "banish them to **The Pit**" were quoted from some of the many commits during this period.*
 
-The following timeline prioritizes the code's path to completion rather than the dates and times of their contribution:
-
+The following timeline prioritizes the code's path to completion rather than the dates and times of their contribution. The videos and images can be accessed via the [following link](https://drive.google.com/drive/folders/12z5z1tFGdxlHvn90n-B6ANJxEP5IL49Q?usp=sharing), numbered and named appropriately. **EPILEPSY WARNING** for many of the videos:
+1. **Invert Y** - The earliest recorded contribution. The Y controls were inverted in the cursor movement, and the borders were not drawn correctly.
+2. **Blood Moon** - An early test of the color process, which was removed in the final version of the code.
+3. **Three Squares** - Early code which first integrated the ballx and bally arrays. Caused many visual errors, but also drew the 3 squares that the code consisted of.
+4. **Corner Collision** - Most up to date code before 05/09. Implemented collision, which only worked in the bottom-right corner (which became infamous by the end of 05/08).
+5. **Devolution** - The first step towards the final code. Reduced grid size from 8x6 to 4x3. Reduced colors to black and white only. Removed the old color process' FOR loop and made the process manual (lots of ANDs and NOTs). Despite the clear errors, it was the first code in a while to have more than a black screen or a square in the bottom-right corner.
+6.  **Manual XY** - Made ballx and bally assignments manual (+24 lines of code). While the assignments were wrong and FOR loops still caused issues in the code, this was a proof of concept showing that manual assignments worked while FOR loops did not. The numver of FOR loops were thus reduced to 1 in bdraw.
+7.  **Colors & Fixes** - Re-added colors, fixed ball sizes (200 radius --> 100 radius), and removed duplicated code in the manual color assignments.
+8.  **More Fixes** - More bug fixes and changes to ballx and bally assignments. The latter was found to be incorrect later on.
+9.  **Final FOR** - Fixed color assignment values, identified the above mistake, and identified that the FOR loop in bdraw was causing issues. This is the final commit to include FOR loops.
+10.  **FOR no MORE** - Fixed error from #8 and removed the final FOR loop, adding ~100 lines of code as a result.
+11.  **TP, HP, LDL** - Initial attempts at collision code resulted in a teleporting cursor, hell portals at the top and bottom borders, and a "loop dee loops" which allowed an off-screen cursor to reappear at the other edge of the screen.
+12.  **First Contact** - Successfully implemented collision code as a nested IF in bdraw. Quote, "Everything is working again. We are so BACK!!!"
+13.  **Strobing Sea** - Quote, "It’s so over." Attempts to make the squares toggle when collided with, maintaining their color otherwise. This led to strobing and visual glitches that necessitated flags. Additionally, on collision the the entire screen would change colors. This acted as a proof of concept for toggling / maintaining colors on a square, although this was eventually scrapped due to continuing issues.
+14.  **Inconsistency** - First attempts at flag code. This collision was inconsistent and caused a jerkiness in the cursor, but it negated the strobing.
+15.  **Partial No bdraw** - A branch of the code that eliminated bdraw entirely, maintaining collision on the top row of squares.
+16.  **No bdraw** - A continuation of the above branch, now maintaining collision on all squares.
+17.  **XOR Colors** - An experimental branch of the code which replaced the ANDs in the color code with XORs.
+18.  **Removal of Color** - An continuation of the main code which included collision with both square 0 and square 1. This led to the realization that the code was removing color from the screen as a whole, which would require a rewrite of the color / drawing logic.
+19.  **anomaly** - An experimental branch similar to #17, but with some alterations. I have no idea what has happened here...
+20.  **Finale** - The final version of the code. After fixing collision in a way akin to #12, we expanded the grid to 8x6, made the cursor circular, and integrated the switches to allow the cursor to change sizes. All with minimal hell portals.
