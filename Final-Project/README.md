@@ -68,7 +68,6 @@ The core of our code was added to ball.vhd. This is as follows:
 - The process mball is incorrectly labeled, now moving the cursor. The process now waits until one of the directional buttons are pressed, setting cursor_x_motion and cursor_y_motion according to these (or to 0 if no buttons are pressed). Both motions are updated at the bottom of the process.
 
 ### References & Inspirations
-
 - https://github.com/mbanks01/DSD-image-project - Michael Banks' final project for CPE-487. This was used as inspiration during the first 1-2 days of coding, although it was referenced less often as original code was developed. Despite this, it was an important first step to developing our code.
 - https://stackoverflow.com/questions/56794058/in-vhdl-is-it-possible-to-create-an-array-of-std-logic-vector-without-using-a-t - This stackoverflow post gave us the baseline for making an array of arrays. The type c_mem_t was ported into our code from here, albeit with some adjustments.
 
@@ -85,5 +84,16 @@ The core of our code was added to ball.vhd. This is as follows:
 - Changing the colors of a square was an extremely difficult process, eventually being scrapped due to time constraints. VHDL looks at colors less as what *is* colored and more like what *is not* colored. If you add too many colors, they stack into white. Not enough, and they may become black. Change colors in the wrong spot, and you may get screen tearing and other visual errors. We eventually hard-coded the colors of each square, removing many of the glitches that can be seen in the **Timeline** below.
 - The borders that trap the cursor offscreen were affectionately referred to as "Hell Portals" throughout development. Although these could be removed given more time, the strange side effects they had on the grid (noted in **Expected Behavior & Hardware Requirements**) led to us keeping them as a sort of added challenge to the otherwise straightforward code.
 
-
 #### Timeline
+
+The exact dates and times of each iteration were not tracked in full due to the high concentration of changes per day and a disregard for uploading smaller changes to GitHub (directly sharing them via google drive instead). The majority of the code base was developed between Monday 05/06 and Thursday 05/09, with initial repositor commits occurring the previous week. The rough timeline is as follow:
+- Prior to 05/06 - Initial files from lab 3 were added to this repository. Buttons and switches were added to vga_top.xdc, vga_top.vhd, and ball.vhd.
+- 05/06 - Directional movement for the cursor was added. Now-obsolete code regarding BTNC was developed.
+- 05/07 - Initial code for placing and drawing the grid. Arrays and vectors were added. Now-obsolete code including FOR loops and wait_until was developed.
+- 05/08 - Many changes that still included the obsolete FOR loops. Aesthetic revisions and refactoring for greating readability were performed.
+- 05/09 - The code was finalized. Various attempts at debugging the FOR loops were performed before eventually moving to manual assignment, reducing the grid size to do so. Collision code, color changing, and now-obsolete flag code which was meant to allow collided-with squares to maintain their color and potentially have various colors. Once the code was functional, it was scaled from 12 squares to the current 48 squares.
+
+*Note: The descriptions and titles of each commit devolved significantly during the final day, showing the team's similarly-devolving mental state. The phrases "we are so back," "it's so over," and "banish them to **The Pit**" were quoted from some of the many commits during this period.*
+
+The following timeline prioritizes the code's path to completion rather than the dates and times of their contribution:
+
